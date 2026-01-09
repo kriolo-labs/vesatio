@@ -1,155 +1,249 @@
 "use client";
 
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import {
-    Search,
-    FileText,
-    Image as ImageIcon,
-    File,
-    Download,
-    Eye,
-    FolderOpen,
-    Filter,
-} from "lucide-react";
-import { cn, formatDate } from "@/lib/utils";
+import { Book, ChevronRight, Download, FileText, Folder, Shield, Sparkles, X } from "lucide-react";
+import { useState } from "react";
 
-// Mock documents
-const mockDocuments = [
-    { id: "1", name: "Contrato Vesatio", type: "pdf", category: "contract", size: 2500000, date: "2025-06-01" },
-    { id: "2", name: "Planta Arquitectónica", type: "pdf", category: "plan", size: 15000000, date: "2025-06-15" },
-    { id: "3", name: "Render 3D - Exterior", type: "image", category: "render", size: 8500000, date: "2025-07-01" },
-    { id: "4", name: "Render 3D - Interior", type: "image", category: "render", size: 7200000, date: "2025-07-01" },
-    { id: "5", name: "Orçamento Final", type: "pdf", category: "invoice", size: 450000, date: "2025-06-20" },
-    { id: "6", name: "Foto Progresso - Jan", type: "image", category: "photo", size: 3500000, date: "2026-01-05" },
-    { id: "7", name: "Factura #127", type: "pdf", category: "invoice", size: 125000, date: "2026-01-02" },
-    { id: "8", name: "Especificações Técnicas", type: "pdf", category: "other", size: 1200000, date: "2025-08-15" },
+interface DocumentFolder {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  count: number;
+}
+
+interface Document {
+  id: string;
+  name: string;
+  type: string;
+  size: string;
+  date: string;
+}
+
+const folders: DocumentFolder[] = [
+  { id: "f1", name: "Contrato", icon: <FileText size={20} />, count: 2 },
+  { id: "f2", name: "Orçamento & Proposta", icon: <FileText size={20} />, count: 3 },
+  { id: "f3", name: "Plantas e Projetos", icon: <FileText size={20} />, count: 8 },
+  { id: "f4", name: "Renders", icon: <Sparkles size={20} />, count: 12 },
+  { id: "f5", name: "Especificações Técnicas", icon: <FileText size={20} />, count: 5 },
+  { id: "f6", name: "Manuais de Equipamentos", icon: <Book size={20} />, count: 4 },
+  { id: "f7", name: "Garantias", icon: <Shield size={20} />, count: 6 },
 ];
 
-const categories = [
-    { id: "all", label: "Todos" },
-    { id: "contract", label: "Contratos" },
-    { id: "invoice", label: "Faturas" },
-    { id: "plan", label: "Plantas" },
-    { id: "render", label: "Renders" },
-    { id: "photo", label: "Fotos" },
-    { id: "other", label: "Outros" },
+const documents: Document[] = [
+  { id: "d1", name: "Contrato_VES-2026-001.pdf", type: "PDF", size: "2.4 MB", date: "2025-05-15" },
+  { id: "d2", name: "Aditivo_Alterações.pdf", type: "PDF", size: "890 KB", date: "2025-08-20" },
+];
+
+const materialPassport = [
+  {
+    id: "m1",
+    name: "Mármore Carrara",
+    origin: "Itália",
+    supplier: "MarmorTech",
+    warranty: "10 anos",
+    care: "Limpeza com pH neutro",
+  },
+  {
+    id: "m2",
+    name: "Carvalho Europeu",
+    origin: "França",
+    supplier: "Bois Noble",
+    warranty: "5 anos",
+    care: "Óleo de manutenção anual",
+  },
+  {
+    id: "m3",
+    name: "Sistema Lutron",
+    origin: "EUA",
+    supplier: "Lutron Electronics",
+    warranty: "5 anos",
+    care: "Não requer manutenção",
+  },
 ];
 
 export default function VaultPage() {
-    const [search, setSearch] = useState("");
-    const [category, setCategory] = useState("all");
+  const [selectedFolder, setSelectedFolder] = useState<DocumentFolder | null>(null);
+  const [showHeritage, setShowHeritage] = useState(false);
+  const [showPassport, setShowPassport] = useState(false);
 
-    const filtered = mockDocuments.filter((doc) => {
-        const matchesSearch = doc.name.toLowerCase().includes(search.toLowerCase());
-        const matchesCategory = category === "all" || doc.category === category;
-        return matchesSearch && matchesCategory;
-    });
+  return (
+    <div className="space-y-6 p-4 pb-24">
+      <h1 className="font-serif text-xl text-diamond">The Vault</h1>
+      <p className="text-sm text-diamond-muted">Todos os documentos do seu projeto num só lugar.</p>
 
-    const getIcon = (type: string) => {
-        if (type === "image") return ImageIcon;
-        if (type === "pdf") return FileText;
-        return File;
-    };
-
-    const formatSize = (bytes: number) => {
-        if (bytes < 1024) return `${bytes} B`;
-        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-    };
-
-    return (
-        <div className="p-4 space-y-6">
-            {/* Header */}
+      {/* Heritage Timeline Card */}
+      <Card
+        className="cursor-pointer border-gold/20 bg-gradient-to-br from-gold/10 to-transparent p-5 transition-colors hover:border-gold/40"
+        onClick={() => setShowHeritage(true)}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gold/20">
+              <Book size={24} className="text-gold" />
+            </div>
             <div>
-                <h1 className="font-serif text-2xl text-diamond">O Cofre</h1>
-                <p className="text-diamond-muted text-sm">Documentos do seu projeto</p>
+              <h3 className="font-serif text-diamond">Heritage Timeline™</h3>
+              <p className="text-xs text-diamond-muted">A história da sua casa</p>
             </div>
-
-            {/* Search */}
-            <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-diamond-muted" />
-                <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Pesquisar documentos..."
-                    className="input-field pl-10"
-                />
-            </div>
-
-            {/* Category Filters */}
-            <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
-                {categories.map((cat) => (
-                    <button
-                        key={cat.id}
-                        onClick={() => setCategory(cat.id)}
-                        className={cn(
-                            "px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors",
-                            category === cat.id
-                                ? "bg-gold text-onyx"
-                                : "bg-onyx-100 text-diamond-muted"
-                        )}
-                    >
-                        {cat.label}
-                    </button>
-                ))}
-            </div>
-
-            {/* Documents Grid */}
-            <div className="grid grid-cols-2 gap-4">
-                {filtered.map((doc, index) => {
-                    const Icon = getIcon(doc.type);
-                    const isImage = doc.type === "image";
-
-                    return (
-                        <motion.button
-                            key={doc.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            className="glass-panel overflow-hidden text-left group"
-                        >
-                            {/* Preview */}
-                            <div className="aspect-square relative bg-onyx-100 flex items-center justify-center">
-                                {isImage ? (
-                                    <div className="w-full h-full bg-onyx-200 flex items-center justify-center">
-                                        <ImageIcon className="w-12 h-12 text-diamond-muted" />
-                                    </div>
-                                ) : (
-                                    <Icon className="w-12 h-12 text-diamond-muted" />
-                                )}
-
-                                {/* Overlay */}
-                                <div className="absolute inset-0 bg-onyx/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                                    <div className="p-2 bg-gold rounded-full">
-                                        <Eye className="w-4 h-4 text-onyx" />
-                                    </div>
-                                    <div className="p-2 bg-white/20 rounded-full">
-                                        <Download className="w-4 h-4 text-white" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Info */}
-                            <div className="p-3">
-                                <p className="text-sm text-diamond truncate">{doc.name}</p>
-                                <div className="flex items-center justify-between mt-1">
-                                    <span className="text-xs text-diamond-muted">{formatSize(doc.size)}</span>
-                                    <span className="text-xs text-diamond-muted">{formatDate(doc.date)}</span>
-                                </div>
-                            </div>
-                        </motion.button>
-                    );
-                })}
-            </div>
-
-            {filtered.length === 0 && (
-                <div className="text-center py-12">
-                    <FolderOpen className="w-12 h-12 mx-auto text-diamond-muted mb-4" />
-                    <p className="text-diamond-muted">Nenhum documento encontrado</p>
-                </div>
-            )}
+          </div>
+          <ChevronRight size={18} className="text-gold" />
         </div>
-    );
+      </Card>
+
+      {/* Material Passport */}
+      <Card
+        className="cursor-pointer border-white/5 bg-onyx-900 p-5 transition-colors hover:border-gold/30"
+        onClick={() => setShowPassport(true)}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5">
+              <Shield size={24} className="text-diamond-muted" />
+            </div>
+            <div>
+              <h3 className="font-medium text-diamond">Material Passport</h3>
+              <p className="text-xs text-diamond-muted">Origens e garantias dos materiais</p>
+            </div>
+          </div>
+          <ChevronRight size={18} className="text-diamond-muted" />
+        </div>
+      </Card>
+
+      {/* Folders Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {folders.map((folder, index) => (
+          <motion.div
+            key={folder.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+          >
+            <Card
+              className="cursor-pointer border-white/5 bg-onyx-900 p-4 transition-colors hover:border-gold/30"
+              onClick={() => setSelectedFolder(folder)}
+            >
+              <div className="mb-2 flex items-center gap-3">
+                <div className="text-gold">{folder.icon}</div>
+                <span className="truncate text-sm font-medium text-diamond">{folder.name}</span>
+              </div>
+              <p className="text-[10px] text-diamond-muted">{folder.count} documentos</p>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Folder Contents Modal */}
+      {selectedFolder && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col bg-onyx/95 p-4"
+          onClick={() => setSelectedFolder(null)}
+        >
+          <div
+            className="mb-6 flex items-center justify-between"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <Folder size={20} className="text-gold" />
+              <span className="font-medium text-diamond">{selectedFolder.name}</span>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setSelectedFolder(null)}>
+              <X size={18} className="text-diamond-muted" />
+            </Button>
+          </div>
+          <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
+            {documents.map((doc) => (
+              <Card
+                key={doc.id}
+                className="flex items-center justify-between border-white/5 bg-onyx-900 p-4"
+              >
+                <div className="flex items-center gap-3">
+                  <FileText size={20} className="text-diamond-muted" />
+                  <div>
+                    <p className="text-sm text-diamond">{doc.name}</p>
+                    <p className="text-[10px] text-diamond-muted">
+                      {doc.size} • {new Date(doc.date).toLocaleDateString("pt-PT")}
+                    </p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="icon" className="text-diamond-muted">
+                  <Download size={16} />
+                </Button>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Heritage Timeline Modal */}
+      {showHeritage && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-onyx">
+          <div className="p-4">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="font-serif text-xl text-diamond">Heritage Timeline™</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowHeritage(false)}>
+                <X size={18} className="text-diamond-muted" />
+              </Button>
+            </div>
+            <div className="space-y-6">
+              <Card className="border-white/5 bg-onyx-900 p-6 text-center">
+                <Book size={48} className="mx-auto mb-4 text-gold" />
+                <h3 className="mb-2 font-serif text-lg text-diamond">Villa Sal Rei</h3>
+                <p className="mb-4 text-sm text-diamond-muted">
+                  Uma crónica visual da criação da sua residência.
+                </p>
+                <Button className="text-onyx-950 gap-2 bg-gold">
+                  <Download size={16} /> Exportar como PDF
+                </Button>
+              </Card>
+              <p className="text-center text-xs text-diamond-muted">
+                Este documento será gerado automaticamente com a história completa do seu projeto,
+                fotos principais, materiais utilizados e datas importantes.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Material Passport Modal */}
+      {showPassport && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-onyx">
+          <div className="p-4">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="font-serif text-xl text-diamond">Material Passport</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowPassport(false)}>
+                <X size={18} className="text-diamond-muted" />
+              </Button>
+            </div>
+            <div className="space-y-4">
+              {materialPassport.map((mat) => (
+                <Card key={mat.id} className="border-white/5 bg-onyx-900 p-4">
+                  <h4 className="mb-2 font-medium text-diamond">{mat.name}</h4>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-diamond-muted">Origem:</span>{" "}
+                      <span className="text-diamond">{mat.origin}</span>
+                    </div>
+                    <div>
+                      <span className="text-diamond-muted">Fornecedor:</span>{" "}
+                      <span className="text-diamond">{mat.supplier}</span>
+                    </div>
+                    <div>
+                      <span className="text-diamond-muted">Garantia:</span>{" "}
+                      <span className="text-diamond">{mat.warranty}</span>
+                    </div>
+                    <div>
+                      <span className="text-diamond-muted">Manutenção:</span>{" "}
+                      <span className="text-diamond">{mat.care}</span>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

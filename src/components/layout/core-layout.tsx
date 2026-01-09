@@ -1,6 +1,8 @@
 "use client";
 
 import { AuraChat } from "@/components/aura/AuraChat";
+import { CommandPalette } from "@/components/aura/CommandPalette";
+import { DailyBriefingDialog } from "@/components/aura/DailyBriefing";
 import { CoreHeader } from "@/components/core/layout/core-header";
 import { CoreSidebar } from "@/components/core/layout/core-sidebar";
 import { CustomCursor } from "@/components/ui/custom-cursor";
@@ -34,6 +36,8 @@ export function CoreLayout({ children }: { children: React.ReactNode }) {
         <CoreHeader />
         <main className="bg-onyx-950 flex-1 overflow-y-auto overflow-x-hidden p-6">{children}</main>
         <AuraChat />
+        <CommandPalette />
+        <DailyBriefingDialog />
       </div>
     </div>
   );
