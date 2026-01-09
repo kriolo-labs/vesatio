@@ -16,7 +16,10 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["profiles"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: Omit<
+          Database["public"]["Tables"]["profiles"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
       };
       clients: {
@@ -32,7 +35,10 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["clients"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: Omit<
+          Database["public"]["Tables"]["clients"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
         Update: Partial<Database["public"]["Tables"]["clients"]["Insert"]>;
       };
       projects: {
@@ -50,7 +56,10 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["projects"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: Omit<
+          Database["public"]["Tables"]["projects"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
         Update: Partial<Database["public"]["Tables"]["projects"]["Insert"]>;
       };
       invoices: {
@@ -69,7 +78,10 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["invoices"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: Omit<
+          Database["public"]["Tables"]["invoices"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
         Update: Partial<Database["public"]["Tables"]["invoices"]["Insert"]>;
       };
       products: {
@@ -89,7 +101,10 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["products"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: Omit<
+          Database["public"]["Tables"]["products"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
         Update: Partial<Database["public"]["Tables"]["products"]["Insert"]>;
       };
       employees: {
@@ -104,7 +119,10 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["employees"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: Omit<
+          Database["public"]["Tables"]["employees"]["Row"],
+          "id" | "created_at" | "updated_at"
+        >;
         Update: Partial<Database["public"]["Tables"]["employees"]["Insert"]>;
       };
       audit_logs: {
@@ -252,3 +270,5 @@ export interface AURAAction {
   description: string;
   rollbackAction?: string;
 }
+
+export * from "./production";

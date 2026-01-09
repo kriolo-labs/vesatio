@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DataGrid } from "@/components/ui/data-grid";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { ProductionOrder } from "@/types/production";
+import { ProductionOrder } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Filter, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
