@@ -161,7 +161,17 @@ export default function NewContractPage() {
             </p>
 
             <div className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-white/10 p-6 text-center transition-colors hover:bg-white/5">
-              <FileUpload onFileSelect={setFile} acceptedTypes=".pdf,.doc,.docx" maxSizeMB={10} />
+              <FileUpload
+                onFilesSelected={(files) => setFile(files[0] || null)}
+                accept={{
+                  "application/pdf": [".pdf"],
+                  "application/msword": [".doc"],
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+                    ".docx",
+                  ],
+                }}
+                maxSize={10 * 1024 * 1024}
+              />
             </div>
           </Card>
 
