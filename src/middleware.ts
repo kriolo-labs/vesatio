@@ -4,16 +4,20 @@ import { NextResponse, type NextRequest } from "next/server";
 // Public routes (no auth required)
 const PUBLIC_ROUTES = [
   "/",
-  "/sobre",
-  "/servicos",
+  "/about",
+  "/services",
   "/portfolio",
   "/collection",
   "/philosophy",
-  "/admissao",
-  "/contacto",
+  "/admission",
+  "/contact",
   "/login",
-  "/registar",
-  "/recuperar-senha",
+  "/setup",
+  "/forgot-password",
+  "/reset-password",
+  "/terms",
+  "/privacy",
+  "/sitemap",
 ];
 
 // Routes by role

@@ -72,12 +72,7 @@ const nextConfig: NextConfig = {
 
   // Experimental features
   experimental: {
-    optimizePackageImports: [
-      "lucide-react",
-      "@radix-ui/react-icons",
-      "recharts",
-      "framer-motion",
-    ],
+    optimizePackageImports: ["lucide-react", "@radix-ui/react-icons", "recharts", "framer-motion"],
   },
 
   // Logging
